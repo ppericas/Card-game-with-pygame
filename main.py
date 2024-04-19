@@ -11,33 +11,54 @@ font = pygame.font.Font(None, 36)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # classes and functions
-# TODO separar en funcions petites tots els textos en una funció per cada 'etapa' del joc (posar el nom, instruccions, joc) 
+
+
+# def render_texts(stage: str, event) -> None:
+#     if stage == assets.NAME_STAGE:
+#         # text_surface = font.render("text", True, assets.BLACK)
+#         # WIN.blit(text_surface, (0, 0))
+#         handle_name(event)
+
+#     elif stage == assets.TUTORIAL_STAGE:
+#         ...
+
+#     elif stage == assets.PLAY_STAGE:
+#         ...
+
+
 def draw_window(stage: str, seconds: int) -> None:
-    handle_click(stage)
-    render_texts(stage)
     render_images(stage)
+    # render_texts(stage)
     pygame.display.update()
 
 
 def render_images(stage) -> None:
     WIN.blit(stage, (0, 0))
-    # WIN.blit(assets.CARDCLUBS6, (0, 0))
+    WIN.blit(assets.CARDCLUBS6, (assets.CARD_X, assets.CARD_Y))
 
 
-def render_texts(stage: str) -> None:
-    if stage == assets.NAME_STAGE:
-        text_surface = font.render("text", True, assets.BLACK)
-        WIN.blit(text_surface, (0, 0))
+def handle_click(stage) -> None:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
 
-    elif stage == assets.TUTORIAL_STAGE:
-        ...
+        elif event.type == pygame.KEYDOWN:
+            if stage == assets.NAME_STAGE:
+                handle_name(event)
 
-    elif stage == assets.PLAY_STAGE:
-        ...
+            elif stage == assets.TUTORIAL_STAGE:
+                # handle_tutorial(event)
+                if event.key == pygame.K_a:
+                    stage: str = assets.PLAY_STAGE
+                    print("a")
+
+            elif stage == assets.PLAY_STAGE:
+                ...
 
 
+#FIXME no se si sa funció funciona per que no s'està cridant be, quan estigui arreglat revisar la funció
 def handle_name(event) -> None:
-    name_input = "hola"
+    name_input = "hola" 
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_RETURN:
             return name_input
@@ -49,19 +70,11 @@ def handle_name(event) -> None:
             name_input += event.unicode
 
 
-def handle_click(stage) -> None:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-
-        elif stage == assets.NAME_STAGE:
-            handle_name(event)
-
-        elif stage == assets.TUTORIAL_STAGE:
-            ...
-
-        elif stage == assets.PLAY_STAGE:
-            ...
+#FIXME no actualitza el valor de stage
+def handle_tutorial(event):
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RETURN:
+            stage: str = assets.PLAY_STAGE
 
 def save_user_data(name: str, time_taken: int) -> None: # TODO usar aquesta funció
     top_scores: list[dict[str, int]] = []
@@ -79,12 +92,13 @@ def main() -> None:
     clock = pygame.time.Clock()
     start_time: int = pygame.time.get_ticks()
     run = True
-    stage: str = assets.NAME_STAGE
+    stage: str = assets.TUTORIAL_STAGE
 
     while run:
         current_time: int = pygame.time.get_ticks()
         chronometer: int = (current_time - start_time) / 1000
         clock.tick(assets.FPS)
+        handle_click(stage)
         draw_window(stage, chronometer)
     pygame.quit()
 
