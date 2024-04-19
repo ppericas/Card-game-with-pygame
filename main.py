@@ -1,95 +1,91 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # imports
-import pygame, os, random, json
-from icecream import ic
+import pygame
 pygame.init()
-
-
-def output_to_file(text:str) -> None:
-    with open('debug_log.txt', 'a') as f:
-        f.write(f'{text}\n')
-
-ic.configureOutput(prefix='Debug| ', outputFunction = output_to_file, includeContext=True)
-
-# ----------------------------------------------------------------------------------------------------------------------
-# constants
-## window
-
+import assets, json
+from icecream import ic
 pygame.display.set_caption('HoL')
-WIDTH: int = 700
-HEIGHT: int = 375
-#FIXME segons condicions foto
 
-WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-
-## colors
-WHITE: tuple[int] = (255, 255, 255)
-BLACK: tuple[int] = (0, 0, 0)
-LIGHT_GREY: tuple[int] = (222, 222, 222)
-RED: tuple[int] = (204, 0, 0)
-DARK_GREY: tuple[int] = (66, 66, 66)
-
-## assets
-PLAY_STAGE_IMAGE = pygame.image.load(
-    os.path.join('assets', 'play_stage.png'))
-PLAY_STAGE = pygame.transform.scale(PLAY_STAGE_IMAGE, (WIDTH, HEIGHT))
-
-NAME_STAGE_IMAGE = pygame.image.load(
-    os.path.join('assets', 'name_stage.png'))
-NAME_STAGE= pygame.transform.scale(NAME_STAGE_IMAGE, (WIDTH, HEIGHT))
-
-TUTORIAL_STAGE_IMAGE = pygame.image.load(
-    os.path.join('assets', 'tutorial_stage.png'))
-TUTORIAL_STAGE = pygame.transform.scale(TUTORIAL_STAGE_IMAGE, (WIDTH, HEIGHT))
-
-## others
-FPS: int = 60
+WIN = pygame.display.set_mode((assets.WIDTH, assets.HEIGHT))
 font = pygame.font.Font(None, 36)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # classes and functions
-def draw_window(stage) -> None:
-    WIN.fill(WHITE)
-    render_images(stage)
+# TODO separar en funcions petites tots els textos en una funció per cada 'etapa' del joc (posar el nom, instruccions, joc) 
+def draw_window(stage: str, seconds: int) -> None:
+    handle_click(stage)
     render_texts(stage)
+    render_images(stage)
     pygame.display.update()
 
-# TODO separar en funcions petites tots els textos en una funció per cada 'etapa' del joc (posar el nom, instruccions, joc) 
-
-def render_texts(stage: str) -> None:
-    match stage:
-        case "name":
-            render_text("", font, BLACK, 100, 100)
-            render_text("", font, BLACK, 100, 100)
-
-        case "tutorial":
-            ...
-
-        case "play":
-            ...
-
-
-def render_text(text, font, color, x, y) -> None:
-    text_surface = font.render(text, True, color)
-    WIN.blit(text_surface, (x, y))
 
 def render_images(stage) -> None:
     WIN.blit(stage, (0, 0))
+    # WIN.blit(assets.CARDCLUBS6, (0, 0))
 
+
+def render_texts(stage: str) -> None:
+    if stage == assets.NAME_STAGE:
+        text_surface = font.render("text", True, assets.BLACK)
+        WIN.blit(text_surface, (0, 0))
+
+    elif stage == assets.TUTORIAL_STAGE:
+        ...
+
+    elif stage == assets.PLAY_STAGE:
+        ...
+
+
+def handle_name(event) -> None:
+    name_input = "hola"
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RETURN:
+            return name_input
+
+        elif event.key == pygame.K_BACKSPACE:
+            name_input = name_input[:-1] # Borra el ultimo character que se ha escrito
+
+        else:
+            name_input += event.unicode
+
+
+def handle_click(stage) -> None:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+
+        elif stage == assets.NAME_STAGE:
+            handle_name(event)
+
+        elif stage == assets.TUTORIAL_STAGE:
+            ...
+
+        elif stage == assets.PLAY_STAGE:
+            ...
+
+def save_user_data(name: str, time_taken: int) -> None: # TODO usar aquesta funció
+    top_scores: list[dict[str, int]] = []
+    with open('top_scores.json', 'r') as file:
+        top_scores = json.load(file)
+
+    top_scores.append({'name': name, 'time_taken': time_taken})
+    top_scores.sort(key=lambda x: x['time_taken']) # sort by time_taken
+
+    with open('top_scores.json', 'w') as file:
+        json.dump(top_scores[:3], file) # save only the 5 names first from top_scores
 
 ## main loop
 def main() -> None:
     clock = pygame.time.Clock()
+    start_time: int = pygame.time.get_ticks()
     run = True
-    stage = NAME_STAGE
+    stage: str = assets.NAME_STAGE
 
     while run:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-        clock.tick(FPS)
-        draw_window(stage)
+        current_time: int = pygame.time.get_ticks()
+        chronometer: int = (current_time - start_time) / 1000
+        clock.tick(assets.FPS)
+        draw_window(stage, chronometer)
     pygame.quit()
 
 if __name__ == '__main__':
