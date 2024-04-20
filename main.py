@@ -12,7 +12,7 @@ font = pygame.font.Font(None, 36)
 # ----------------------------------------------------------------------------------------------------------------------
 # classes and functions
 
-
+# FIXME crec que no es necessaria amb la darrera implementació
 # def render_texts(stage: str, event) -> None:
 #     if stage == assets.NAME_STAGE:
 #         # text_surface = font.render("text", True, assets.BLACK)
@@ -24,6 +24,8 @@ font = pygame.font.Font(None, 36)
 
 #     elif stage == assets.PLAY_STAGE:
 #         ...
+
+
 
 
 def draw_window(stage: str, seconds: int) -> None:
@@ -38,6 +40,7 @@ def render_images(stage) -> None:
 
 
 def handle_click(stage) -> None:
+    new_stage = stage
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -48,15 +51,23 @@ def handle_click(stage) -> None:
 
             elif stage == assets.TUTORIAL_STAGE:
                 # handle_tutorial(event)
-                if event.key == pygame.K_a:
-                    stage: str = assets.PLAY_STAGE
-                    print("a")
+                for key in range(pygame.K_a, pygame.K_z + 1):
+                    if event.key == key:
+                        new_stage: str = assets.PLAY_STAGE
 
             elif stage == assets.PLAY_STAGE:
                 ...
 
+    return new_stage
 
-#FIXME no se si sa funció funciona per que no s'està cridant be, quan estigui arreglat revisar la funció
+'''
+TODO funcio per detectar qualsevol lletra del teclat
+elif event.type == pygame.KEYDOWN:
+                for key in range(pygame.K_a, pygame.K_z + 1):
+                    if event.key == key:
+                        key_name = pygame.key.name(key)
+                        print(f"La tecla '{key_name}' fue presionada")
+'''
 def handle_name(event) -> None:
     name_input = "hola" 
     if event.type == pygame.KEYDOWN:
@@ -98,7 +109,7 @@ def main() -> None:
         current_time: int = pygame.time.get_ticks()
         chronometer: int = (current_time - start_time) / 1000
         clock.tick(assets.FPS)
-        handle_click(stage)
+        stage = handle_click(stage)
         draw_window(stage, chronometer)
     pygame.quit()
 
