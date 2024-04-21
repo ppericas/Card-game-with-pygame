@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # imports
-import pygame, assets, json
+import pygame, assets, random, json
 from icecream import ic
 pygame.display.set_caption('HoL')
 pygame.init()
@@ -12,19 +12,20 @@ font = pygame.font.Font(None, 36)
 # classes and functions
 def draw_window(stage: str, text_name: str, seconds: int) -> None: # TODO implementació per usar els segons
     WIN.blit(stage, (0, 0))
-    render_images()
 
     if stage == assets.NAME_STAGE:
+        render_text(f"Cuando hayas acabado, pulsa intro", assets.BLACK, ((assets.WIDTH) //5, (assets.HEIGHT - 100) //3))
         render_text(f"Escribe tu nickname:", assets.BLACK, ((assets.WIDTH) //3, (assets.HEIGHT) //3))
         render_text(f"{text_name}", assets.BLACK, ((assets.WIDTH) //3, (assets.HEIGHT + 100) //3))
 
     elif stage == assets.TUTORIAL_STAGE:
-
         render_text(f"", assets.BLACK, (0, 0))
 
 
     elif stage == assets.PLAY_STAGE:
         render_text(f"{seconds} s", assets.BLACK, (0, 100))
+        card = get_random_card()
+        render_images(card)
 
     pygame.display.update()
 
@@ -34,10 +35,13 @@ def render_text(text: str, color: tuple[int], z: tuple[int]) -> None:
     WIN.blit(text_surface, z)
 
 
+def render_images(card) -> None:
+    WIN.blit(card, (assets.CARD_X, assets.CARD_Y))
 
-def render_images() -> None:
-    # WIN.blit(assets.CARDCLUBS6, (assets.CARD_X, assets.CARD_Y))
-    ...
+
+def get_random_card() -> int:
+    random_card = random.choice(assets.deck)
+    return random_card
 
 
 # This method checks in which state of the game you are, in the name stage, in the tutorial stage or in the game stage; so it doesn't have to execute the ones that doesnt interest you
@@ -65,10 +69,24 @@ def update_stage(stage: str, text_name: str) -> str:
                             new_text_name += key_name
 
         elif stage == assets.TUTORIAL_STAGE:
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return new_stage, new_text_name
+
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     new_stage: str = assets.PLAY_STAGE
                     return new_stage, new_text_name
+
+        elif stage == assets.PLAY_STAGE:
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return new_stage, new_text_name
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    ...
 
     return new_stage, new_text_name
 
