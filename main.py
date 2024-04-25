@@ -3,66 +3,71 @@
 import pygame, assets, random, json, csv
 pygame.init()
 pygame.display.set_caption('HoL')
+from icecream import ic
 
 WIN = pygame.display.set_mode((assets.WIDTH, assets.HEIGHT))
 font = pygame.font.Font(None, 36)
 clock = pygame.time.Clock()
 
 # ----------------------------------------------------------------------------------------------------------------------
-# classes and functions
+# classes and function
+# HACK Ho he fet sense utilitzar classes heredades per que trob que no aportaria res
 class Card:
-    def __init__(self, name: str, path: str, value: int) -> None:
+    def __init__(self, name, path, suit, value, id):
         self.name = name
         self.path = path
+        self.suit = suit
         self.value = value
-
-class Hearts(Card):
-    def __init__(self, name: str, path: str, value: int) -> None:
-        super().__init__(name, path, value)
-        self.suit = "Hearts"
-
-class Diamonds(Card):
-    def __init__(self, name: str, path: str, value: int) -> None:
-        super().__init__(name, path, value)
-        self.suit = "Diamonds"
-
-class Clubs(Card):
-    def __init__(self, name: str, path: str, value: int) -> None:
-        super().__init__(name, path, value)
-        self.suit = "Clubs"
-
-class Spades(Card):
-    def __init__(self, name: str, path: str, value: int) -> None:
-        super().__init__(name, path, value)
-        self.suit = "Spades"
-
-def create_deck(csv_file):
-    deck = []
-    with open(csv_file, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            name = row['name']
-            image_path = row['path']
-            value = int(row['value'])
-            suit = row['suit']
-
-            if suit == 'Hearts':
-                card = Hearts(name, image_path, value)
-
-            elif suit == 'Diamonds':
-                card = Diamonds(name, image_path, value)
-
-            elif suit == 'Clubs':
-                card = Clubs(name, image_path, value)
-
-            elif suit == 'Spades':
-                card = Spades(name, image_path, value)
-
-            deck.append(card)
-    return deck
+        self.id = id
 
 
-def draw_window(stage: str, text_name: str, action: str) -> None:
+class Deck:
+    def __init__(self):
+        self.images = []
+        self.cards = []
+        self.used_cards = []
+        self.posible_cards: str = []
+
+
+    def generate_deck(self, archivo_csv):
+        try:
+            with open(archivo_csv, newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                id_index = 1
+                for row in reader:
+                    name = row['name']
+                    if name in self.posible_cards:
+                        continue
+
+                    self.posible_cards.append(name)
+                    path = row['path']
+                    suit = row['suit']
+                    value = int(row['value'])
+
+                    card = Card(name, path, suit, value, id_index)
+                    self.cards.append(card)
+                    # print(f"{name}, {path}, {suit}, {value}, {id_index}")
+                    id_index += 1
+
+        except FileNotFoundError:
+            print(f"Error: El archivo '{archivo_csv}' no fue encontrado.")
+
+        except Exception as e:
+            print(f"Error inesperado al procesar el archivo CSV: {e}")
+
+
+    def get_random_card(self) -> Card:
+        self.random_card = random.choice(self.cards)
+        self.used_cards.append(self.random_card)
+        return self.random_card
+
+    def update_used_cards(self):
+        ...
+
+    def get_id(self):
+        return id
+
+def draw_window(stage: str, text_name: str, action: str, deck) -> None:
     WIN.blit(stage, (0, 0))
 
     if stage == assets.NAME_STAGE:
@@ -79,15 +84,26 @@ def draw_window(stage: str, text_name: str, action: str) -> None:
         seconds: str = "{:.0f}".format(seconds) # formatea seconds a no tener decimales
         clock.tick(assets.FPS)
         render_text(f"{seconds} s", assets.BLACK, (0, 100))
-        if int(seconds) >= 1:
-            # TODO Part on s'implementara es condicional de si has clicat a dedins d'un quadrat de higher o lower
-            
-            if action == "BOTON_SUPERIOR":
-                card = get_random_card()
-                render_images(card, (assets.CARD_X, assets.CARD_Y))
-                render_text(f"a", assets.BLACK, (0, 0))
+
+        if action == "BOTON_SUPERIOR":
+            random_card = deck.get_random_card()
+            actual_card = random_card.id
+            for i, j in assets.cards_dict.items():
+                ic(actual_card, i)
+                if actual_card == i:
+                    ic("a")
+                    render_images(j, (assets.CARD_X, assets.CARD_Y))
+
+                
+
+
+        elif action == "BOTON_INFERIOR":
+            ...
+        elif action == "":
+            ...
 
     pygame.display.update()
+
 
 def render_text(text: str, color: tuple[int], z: tuple[int]) -> None:
     text_surface = font.render(text, True, color)
@@ -98,11 +114,6 @@ def render_images(surface: str, coordinates: tuple[int]) -> None:
     WIN.blit(surface, coordinates)
 
 
-def get_random_card() -> Card:
-    random_card = random.choice(assets.deck)
-    return random_card
-
-
 def detect_collision(mouse_x, mouse_y, square):
     if square.collidepoint(mouse_x, mouse_y) == True:
         return True
@@ -111,10 +122,9 @@ def detect_collision(mouse_x, mouse_y, square):
 
 
 # This method checks in which state of the game you are, in the name stage, in the tutorial stage or in the game stage; so it doesn't have to execute the ones that doesnt interest you
-def update_stage(stage: str, text_name: str) -> str:
+def update_stage(stage: str, text_name: str, action, deck) -> str:
     new_stage: str = stage
     new_text_name: str = text_name
-    action = None
     for event in pygame.event.get():
         if stage == assets.NAME_STAGE:
             if event.type == pygame.QUIT:
@@ -149,7 +159,6 @@ def update_stage(stage: str, text_name: str) -> str:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                return new_stage, new_text_name
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
@@ -180,7 +189,7 @@ def update_name(stage: str, event, text_name: str) -> str:
                 return new_text_name
 
             else:
-                for key in range(pygame.K_a, pygame.K_z + 1):
+                for key in range(pygame.K_a, pygame.K_z + 1) and range(2):
                     if event.key == key:
                         key_name = pygame.key.name(key)
                         new_text_name += key_name
@@ -204,14 +213,17 @@ def save_user_data(name: str, time_taken: int) -> None: # TODO usar aquesta func
 ## main loop
 def main() -> None:
     run: bool = True
-    deck = create_deck('deck.csv')
-    stage: int = assets.NAME_STAGE
     text_name: str = ""
+    action = None
+    stage: int = assets.NAME_STAGE
+    # card = assets.CARDBACK
+    deck = Deck()
+    deck.generate_deck('deck.csv')
 
     while run:
         clock.tick(assets.FPS)
-        stage, text_name, action = update_stage(stage, text_name)
-        draw_window(stage, text_name, action)
+        stage, text_name, action = update_stage(stage, text_name, action, deck)
+        draw_window(stage, text_name, action, deck)
 
     pygame.quit()
 
