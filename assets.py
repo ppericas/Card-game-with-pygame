@@ -27,6 +27,20 @@ BOTON_SUPERIOR_Y: int = 83
 BOTON_SUPERIOR_WIDTH: int = 122
 BOTON_SUPERIOR_HEIGHT: int = 95
 
+NOMBRE_JUGADOR_X: int = 182
+NOMBRE_JUGADOR_Y: int = 3
+
+TIEMPO_X: int = 298
+TIEMPO_Y: int = 31
+
+PUNTUACION_X: int = 182
+PUNTUACION_Y: int = 31
+
+CARTAS_EXTRAIDAS_X: int = 440
+CARTAS_EXTRAIDAS_Y: int = 100
+
+HALL_OF_FAME_X: int = 440
+HALL_OF_FAME_Y: int = 232
 
 # ----------------------------------------------------------------------------------------------------------------------
 # colors
@@ -79,10 +93,6 @@ PLAY_STAGE = pygame.transform.scale(PLAY_STAGE_IMAGE, (WIDTH, HEIGHT))
 NAME_STAGE_IMAGE = pygame.image.load(
     os.path.join('assets', 'name_stage.png'))
 NAME_STAGE= pygame.transform.scale(NAME_STAGE_IMAGE, (WIDTH, HEIGHT))
-
-TUTORIAL_STAGE_IMAGE = pygame.image.load(
-    os.path.join('assets', 'tutorial_stage.png'))
-TUTORIAL_STAGE = pygame.transform.scale(TUTORIAL_STAGE_IMAGE, (WIDTH, HEIGHT))
 
 CARDBACK_IMAGE = pygame.image.load(
     os.path.join('assets', 'cardback.png'))
@@ -309,12 +319,12 @@ cards_list: list[str] = [
 cards_dict = {}
 for index, card_image in enumerate(cards_list, start=1):
     cards_dict[index] = card_image
-    print(card_image, index)
 
 JUEGO_NUEVO = pygame.Rect(JUEGO_NUEVO_X, JUEGO_NUEVO_Y, JUEGO_NUEVO_WIDTH, JUEGO_NUEVO_HEIGHT)
 BOTON_INFERIOR = pygame.Rect(BOTON_INFERIOR_X, BOTON_INFERIOR_Y, BOTON_INFERIOR_WIDTH, BOTON_INFERIOR_HEIGHT)
 BOTON_SUPERIOR = pygame.Rect(BOTON_SUPERIOR_X, BOTON_SUPERIOR_Y, BOTON_SUPERIOR_WIDTH, BOTON_SUPERIOR_HEIGHT)
 
+# NOMBRE_JUGADOR = pygame.Rect(NOMBRE_JUGADOR_X, NOMBRE_JUGADOR_Y, NOMBRE_JUGADOR_WIDTH, NOMBRE_JUGADOR_HEIGHT)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # others

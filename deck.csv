@@ -1,5 +1,5 @@
 name,path,value,suit
-CARDHEARTS2,cardHearts2.png,2,Hearts
+CARDHEARTSA,cardHeartsA.png,1,Hearts
 CARDHEARTS2,cardHearts2.png,2,Hearts
 CARDHEARTS3,cardHearts3.png,3,Hearts
 CARDHEARTS4,cardHearts4.png,4,Hearts
@@ -12,7 +12,7 @@ CARDHEARTS10,cardHearts10.png,10,Hearts
 CARDHEARTSJ,cardHeartsJ.png,11,Hearts
 CARDHEARTSQ,cardHeartsQ.png,12,Hearts
 CARDHEARTSK,cardHeartsK.png,13,Hearts
-CARDHEARTSA,cardHeartsA.png,1,Hearts
+CARDDIAMONDSA,cardDiamondsA.png,1,Diamonds
 CARDDIAMONDS2,cardDiamonds2.png,2,Diamonds
 CARDDIAMONDS3,cardDiamonds3.png,3,Diamonds
 CARDDIAMONDS4,cardDiamonds4.png,4,Diamonds
@@ -25,7 +25,7 @@ CARDDIAMONDS10,cardDiamonds10.png,10,Diamonds
 CARDDIAMONDSJ,cardDiamondsJ.png,11,Diamonds
 CARDDIAMONDSQ,cardDiamondsQ.png,12,Diamonds
 CARDDIAMONDSK,cardDiamondsK.png,13,Diamonds
-CARDDIAMONDSA,cardDiamondsA.png,1,Diamonds
+CARDCLUBSA,cardClubsA.png,1,Clubs
 CARDCLUBS2,cardClubs2.png,2,Clubs
 CARDCLUBS3,cardClubs3.png,3,Clubs
 CARDCLUBS4,cardClubs4.png,4,Clubs
@@ -38,7 +38,7 @@ CARDCLUBS10,cardClubs10.png,10,Clubs
 CARDCLUBSJ,cardClubsJ.png,11,Clubs
 CARDCLUBSQ,cardClubsQ.png,12,Clubs
 CARDCLUBSK,cardClubsK.png,13,Clubs
-CARDCLUBSA,cardClubsA.png,1,Clubs
+CARDSPADESA,cardSpadesA.png,1,Spades
 CARDSPADES2,cardSpades2.png,2,Spades
 CARDSPADES3,cardSpades3.png,3,Spades
 CARDSPADES4,cardSpades4.png,4,Spades
@@ -51,4 +51,3 @@ CARDSPADES10,cardSpades10.png,10,Spades
 CARDSPADESJ,cardSpadesJ.png,11,Spades
 CARDSPADESQ,cardSpadesQ.png,12,Spades
 CARDSPADESK,cardSpadesK.png,13,Spades
-CARDSPADESA,cardSpadesA.png,1,Spades
